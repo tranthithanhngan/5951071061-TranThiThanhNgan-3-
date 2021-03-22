@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        input {
+            position: absolute;
+            z-index: 10;
+            top: 0;
+            right: 50%;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" />
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer();
+
+            // dia chi UTC2
+            const School = { lat: 10.8458136, lng: 106.7939966 };
+            //dia chi nha
+            const NhaNgan = { lat: 10.8465511, lng: 106.7964327 };
+
+            //icon UTC2
+            const iconSchool = {
+                url: "LogoUTC.jpg",
+                scaledSize: new google.maps.Size(20, 20),
+                origin: new google.maps.Point(0,0),
+                anchor: new google.maps.Point(0, 0)
+            };
+            //icon Nha Ngan
+            const iconNhaNgan = {
+                url: "ThanhNgan.jpg",
+                scaledSize: new google.maps.Size(20, 20),
+                origin: new google.maps.Point(0,0),
+                anchor: new google.maps.Point(0, 0)
+            };
+            //infor school
+            const infoSchool = "Trường Đại Học Giao Thông Vận Tải PH tại TP. Hồ Chí Minh";
+            //infor Ngan
+            const infoNhaNgan = "<div>Trần Thị Thanh Ngân<br /> 21 Tuổi<br />5951071061<br />14-05-2000<br />Bình Định<br />tranthanhngan2000@gmail.com </div>";
+
+            // load Map
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: School
+            });
+            directionsRenderer.setMap(map);
+
+            // icon UTC2
+            const markerSchool = new google.maps.Marker({
+                position: School,
+                map: map,
+                title: "UTC2",
+                draggable: true,
+                icon: iconSchool,
+                animation: google.maps.Animation.DROP,
+            });
+            // icon Ngan Home
+            const markerHouse = new google.maps.Marker({
+                position: NhaNgan,
+                map: map,
+                title: "House",
+                draggable: true,
+                icon: iconNhaNgan,
+                animation: google.maps.Animation.DROP,
+            });
+
+            // tao info
+            const infoSchoolUTC2Load = new google.maps.InfoWindow({
+                content: infoSchool
+            });
+            markerSchool.addListener("click", () => infoSchoolUTC2Load.open(map, markerSchool));
+            const infoHouseLoad = new google.maps.InfoWindow({
+                content: infoNhaNgan
+            });
+            markerHouse.addListener("click", () => infoHouseLoad.open(map, markerHouse));
+
+            // function chi duong
+            function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+            directionsService.route(
+                {
+                    origin: School,
+                    destination: NhaNgan,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                },
+                (response, status) => {
+                    if (status === "OK") {
+                        directionsRenderer.setDirections(response);
+                    } else {window.alert("Directions request failed due to " + status);}});
+        }
+        calculateAndDisplayRoute(directionsService, directionsRenderer);
+        }
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE&callback=initMap&libraries=&v=weekly"
+        async>
+    </script>
+</body>
+</html>
